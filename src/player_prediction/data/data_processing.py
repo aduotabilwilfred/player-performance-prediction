@@ -12,7 +12,7 @@ path = get_config("data_path")
 data = pd.read_csv(path)
 print(data.head(5))
 
-print("=" * 50)
+print("=" * 60)
 
 print(len(data.columns.tolist()))
 print(f"Columns: {data.columns.tolist()}")
