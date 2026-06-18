@@ -1,0 +1,32 @@
+[project]
+name = "player_prediction"
+version = "0.1.0"
+description = "Player performance prediction in world cup"
+requires-python = ">=3.10"
+dependencies = ["scikit-learn", "pandas", "numpy"]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["W", "E", "I", "B", "F"]
+ignore = ["E501", "B008"]
+
+[toolruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.black]
+line-length = 120
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+

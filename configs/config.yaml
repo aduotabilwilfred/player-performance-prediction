@@ -1,0 +1,5 @@
+model_name: random_forest
+learning_rate: 0.01
+epochs: 100
+data_path: /home/wilfredotabil/mlops-practice/data/raw/fifa_world_cup_2026_player_performance.csv
+
