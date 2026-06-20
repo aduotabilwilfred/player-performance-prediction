@@ -42,17 +42,6 @@ share/python-wheels/
 *.egg-info/
 src/*.egg-info/
 
-# Local configuration / secrets
-.env
-.env.local
-.env.*.local
-
-# MLOps - Data and Models (do not track datasets or model weights)
-data/raw/*
-!data/raw/.gitkeep
-data/processed/*
-!data/processed/.gitkeep
-
 # Ignore trained models
 models/*
 !models/.gitkeep
