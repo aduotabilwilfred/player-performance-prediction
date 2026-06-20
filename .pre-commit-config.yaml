@@ -20,6 +20,13 @@ repos:
       - id: ruff-format
 
 
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.15.17
+  hooks:
+    - id: ruff
+      args: [--ignore, "W293, E402, F821"]
+
+
   - repo: local
     hooks:
       - id: pytest
