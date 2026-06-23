@@ -1,6 +1,7 @@
+import logging
 import os
 import sys
-import logging
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -165,7 +166,9 @@ def main(data_path):
     val_missing = val_df.isnull().sum().sum()
     test_missing = test_df.isnull().sum().sum()
     logger.info(f"  Missing values — Train: {train_missing} | Val: {val_missing} | Test: {test_missing}")
-    logger.info(f"  Target mean — Train: {train_df[TARGET].mean():.3f} | Val: {val_df[TARGET].mean():.3f} | Test: {test_df[TARGET].mean():.3f}")
+    logger.info(
+        f"  Target mean — Train: {train_df[TARGET].mean():.3f} | Val: {val_df[TARGET].mean():.3f} | Test: {test_df[TARGET].mean():.3f}"
+    )
     logger.info("All quality checks passed!")
 
     # === SAVE OUTPUTS ===
@@ -178,9 +181,15 @@ def main(data_path):
     val_df.to_csv(val_path, index=False)
     test_df.to_csv(test_path, index=False)
 
-    logger.info(f"Train saved:      {train_path} | Shape: {train_df.shape} | Size: {os.path.getsize(train_path) / 1024**2:.2f} MB")
-    logger.info(f"Validation saved: {val_path} | Shape: {val_df.shape} | Size: {os.path.getsize(val_path) / 1024**2:.2f} MB")
-    logger.info(f"Test saved:       {test_path} | Shape: {test_df.shape} | Size: {os.path.getsize(test_path) / 1024**2:.2f} MB")
+    logger.info(
+        f"Train saved:      {train_path} | Shape: {train_df.shape} | Size: {os.path.getsize(train_path) / 1024**2:.2f} MB"
+    )
+    logger.info(
+        f"Validation saved: {val_path} | Shape: {val_df.shape} | Size: {os.path.getsize(val_path) / 1024**2:.2f} MB"
+    )
+    logger.info(
+        f"Test saved:       {test_path} | Shape: {test_df.shape} | Size: {os.path.getsize(test_path) / 1024**2:.2f} MB"
+    )
 
 
 if __name__ == "__main__":
