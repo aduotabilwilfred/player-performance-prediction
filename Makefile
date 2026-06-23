@@ -7,12 +7,12 @@ setup:
 	uv pip install -e .
 
 data:
-	python3 -m player_prediction.data.data_processing.py
+	dvc repro
 train:
 	python3 -m player_prediction.models.train.py
 test:
 	pytest tests/
 clean:
-	rm  -rf __pycache__ .pytest_cache
+	rm -rf __pycache__ .pytest_cache
 
 .PHONY: all setup data train test clean

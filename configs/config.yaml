@@ -2,3 +2,58 @@ model_name: random_forest
 learning_rate: 0.01
 epochs: 100
 data_path: /mnt/c/Users/WilfredOtabil/Desktop/mlops-practice/data/raw/fifa_world_cup_2026_player_performance.csv
+
+# Data processing settings
+processed_data_dir: data/processed
+train_ratio: 0.70
+val_ratio: 0.15
+test_ratio: 0.15
+random_seed: 42
+remove_zero_ratings: true
+dedup_column: player_name
+target: player_rating
+
+# Feature definitions
+numeric_features:
+  # Tier 1: Primary Predictors
+  - consistency_score
+  - market_value_eur
+  - pressure_resistance
+  - defensive_contribution
+  - clutch_performance_score
+  - offensive_contribution
+  - creativity_score
+  - stamina_score
+  # Tier 2: Demographics
+  - age
+  - height_cm
+  - weight_kg
+  - minutes_played
+  # Tier 3: Actions
+  - goals
+  - tackles
+  - interceptions
+  - key_passes
+  - expected_goals_xg
+  - expected_assists_xa
+  - defensive_actions
+  - recoveries
+  - assists
+  # Tier 4: Physical
+  - top_speed_kmh
+  - distance_covered_km
+  - accelerations
+  - decelerations
+  - sprint_distance_km
+
+categorical_features:
+  - position
+  - tournament_stage
+  - match_result
+
+engineered_features:
+  - pass_accuracy
+  - shot_accuracy
+  - dribble_success
+  - goals_per_minute
+  - distance_per_minute
