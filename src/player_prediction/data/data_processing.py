@@ -46,7 +46,6 @@ def main(data_path):
 
     # Load and deduplicate data
     df = pd.read_csv(data_path)
-    
 
     if remove_zero_ratings:
         df = df[df[TARGET] > 0].reset_index(drop=True)
