@@ -10,7 +10,7 @@ val_ratio: 0.15
 test_ratio: 0.15
 random_seed: 42
 remove_zero_ratings: true
-dedup_column: player_name
+dedup_column: null
 target: player_rating
 
 # Feature definitions
