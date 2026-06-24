@@ -9,7 +9,7 @@ setup:
 data:
 	dvc repro
 train:
-	python3 -m player_prediction.models.train.py
+	python3 -m player_prediction.models.train
 test:
 	pytest tests/
 clean:

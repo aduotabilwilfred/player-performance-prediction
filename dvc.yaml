@@ -1,6 +1,6 @@
 stages:
   process_data:
-    cmd: python3 src/player_prediction/data/data_processing.py
+    cmd: python3 -m src.player_prediction.data.data_processing
     deps:
       - src/player_prediction/data/data_processing.py
       - configs/config.yaml
