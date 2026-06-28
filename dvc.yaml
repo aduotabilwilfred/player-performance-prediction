@@ -9,3 +9,19 @@ stages:
       - data/processed/train.csv
       - data/processed/validation.csv
       - data/processed/test.csv
+
+  train:
+    cmd: python3 -m src.player_prediction.models.train
+    deps:
+      - src/player_prediction/models/train.py
+      - configs/config.yaml
+      - params.yaml
+      - data/processed/train.csv
+    outs:
+      - models/model.pkl
+    params:
+      -train.learning_rate
+      -train.epochs
+    metrics:
+      - metrics.json:
+          cache: false
