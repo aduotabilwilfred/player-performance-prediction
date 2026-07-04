@@ -43,4 +43,12 @@ if __name__ == "__main__":
     train_df = pd.read_csv("data/processed/train.csv")
     val_df = pd.read_csv("data/processed/val.csv")
     test_df = pd.read_csv("data/processed/test.csv")
+
+    # separate features and target
+    X_train = train_df.drop("player_rating", axis=1)
+    y_train = train_df["player_rating"]
+    X_val = val_df.drop("player_rating", axis=1)
+    y_val = val_df["player_rating"]
+    X_test = test_df.drop("player_rating", axis=1)
+    y_test = test_df["player_rating"]
     main()
