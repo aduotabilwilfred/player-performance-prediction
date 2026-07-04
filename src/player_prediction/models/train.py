@@ -14,7 +14,7 @@ def load_parameters():
     return config["xgboost_train"]
 
 
-def main():
+def main(X_train, y_train, X_val, y_val, X_test, y_test):
     params = load_parameters()
     print(params)
 
@@ -51,4 +51,4 @@ if __name__ == "__main__":
     y_val = val_df["player_rating"]
     X_test = test_df.drop("player_rating", axis=1)
     y_test = test_df["player_rating"]
-    main()
+    main(X_train, y_train, X_val, y_val, X_test, y_test)
