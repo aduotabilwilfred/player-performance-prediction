@@ -1,8 +1,9 @@
-import os
 import json
-import yaml
+import os
 import pickle
+
 import pandas as pd
+import yaml
 from xgboost import XGBRegressor
 
 
@@ -16,22 +17,19 @@ def load_parameters():
 def main():
     params = load_parameters()
     print(params)
-    
+
     model = XGBRegressor(
         n_estimators=params["n_estimators"],
         max_depth=params["max_depth"],
         learning_rate=params["learning_rate"],
         random_state=params["random_state"],
-        n_jobs=params["n_jobs"]
+        n_jobs=params["n_jobs"],
     )
 
     model.fit(X_train, y_train)
     val_r2 = model.score(X_val, y_val)
     test_r2 = model.score(X_test, y_test)
-    metrics = {
-        "test_r2": test_r2,
-        "val_r2": val_r2
-    }
+    metrics = {"test_r2": test_r2, "val_r2": val_r2}
     with open("metrics.json", "w") as f:
         json.dump(metrics, f)
 
