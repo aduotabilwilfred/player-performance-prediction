@@ -4,6 +4,7 @@ stages:
     deps:
       - src/player_prediction/data/data_processing.py
       - configs/config.yaml
+      - configs/read_config.py
       - data/raw/fifa_world_cup_2026_player_performance.csv
     outs:
       - data/processed/train.csv
@@ -15,13 +16,16 @@ stages:
     deps:
       - src/player_prediction/models/train.py
       - configs/config.yaml
-      - params.yaml
       - data/processed/train.csv
+      - configs/read_config.py
     outs:
       - models/model.pkl
     params:
-      -train.learning_rate
-      -train.epochs
+      - xgboost_train.learning_rate
+      - xgboost_train.n_estimators
+      - xgboost_train.max_depth
+      - xgboost_train.random_state
+      - xgboost_train.n_jobs
     metrics:
       - metrics.json:
           cache: false
