@@ -41,7 +41,7 @@ def main():
 if __name__ == "__main__":
     # load data
     train_df = pd.read_csv("data/processed/train.csv")
-    val_df = pd.read_csv("data/processed/val.csv")
+    val_df = pd.read_csv("data/processed/validation.csv")
     test_df = pd.read_csv("data/processed/test.csv")
 
     # separate features and target
