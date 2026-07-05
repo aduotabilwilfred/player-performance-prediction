@@ -15,7 +15,7 @@ def load_parameters():
 
 
 def main(X_train, y_train, X_val, y_val, X_test, y_test, parameters=None):
-    params = load_parameters()
+    params = parameters
     print(params)
 
     model = XGBRegressor(
