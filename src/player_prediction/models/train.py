@@ -2,8 +2,10 @@ import json
 import os
 import pickle
 import pandas as pd
+import numpy as np
 import yaml
 from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 
 def load_parameters():
@@ -28,7 +30,21 @@ def main(X_train, y_train, X_val, y_val, X_test, y_test, parameters=None):
     model.fit(X_train, y_train)
     val_r2 = model.score(X_val, y_val)
     test_r2 = model.score(X_test, y_test)
-    metrics = {"test_r2": test_r2, "val_r2": val_r2}
+    val_pred = model.predict(X_val)
+    val_rmse = np.sqrt(mean_squared_error(y_val, val_pred))
+    val_mae = mean_absolute_error(y_val, val_pred)
+    test_pred = model.predict(X_test)
+    test_rmse = np.sqrt(mean_squared_error(y_test, test_pred))
+    test_mae = mean_absolute_error(y_test, test_pred)
+
+    metrics = {
+        "val_r2": f"{val_r2:.2f}",
+        "test_r2": f"{test_r2:.2f}",
+        "val_rmse": f"{val_rmse:.2f}",
+        "val_mae": f"{val_mae:.2f}",
+        "test_rmse": f"{test_rmse:.2f}",
+        "test_mae": f"{test_mae:.2f}",
+    }
     with open("metrics.json", "w") as f:
         json.dump(metrics, f)
 

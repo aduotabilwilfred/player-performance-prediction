@@ -47,3 +47,5 @@ src/*.egg-info/
 # Ignore trained models
 models/*
 !models/.gitkeep
+metrics.json
+.gitignore
