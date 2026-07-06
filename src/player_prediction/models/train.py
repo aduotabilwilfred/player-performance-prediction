@@ -1,11 +1,12 @@
 import json
 import os
 import pickle
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import yaml
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 from xgboost import XGBRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 
 def load_parameters():
