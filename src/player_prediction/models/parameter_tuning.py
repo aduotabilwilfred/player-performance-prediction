@@ -1,7 +1,7 @@
 import mlflow
 import optuna
-from xgboost import XGBRegressor
 import pandas as pd
+from xgboost import XGBRegressor
 
 train_data = pd.read_csv("data/processed/train.csv")
 val_data = pd.read_csv("data/processed/validation.csv")
@@ -18,6 +18,8 @@ y_test = test_data["player_rating"]
 mlflow.set_tracking_uri("http://localhost:8000")
 mlflow.set_experiment("xgboost_parameter_tuning")
 mlflow.xgboost.autolog()
+
+
 def objective(trial, X_train, y_train, X_val, y_val, X_test, y_test):
     params = {
         "n_estimators": trial.suggest_int("n_estimators", 50, 300),
@@ -42,6 +44,6 @@ with mlflow.start_run():
     study.optimize(lambda trial: objective(trial, X_train, y_train, X_val, y_val, X_test, y_test), n_trials=50)
     mlflow.log_params({f"best_{k}": v for k, v in study.best_params.items()})
     mlflow.log_metric("best_val_score", study.best_value)
-    
+
     best_test_score = study.best_trial.user_attrs["test_score"]
     mlflow.log_metric("best_test_score", best_test_score)
