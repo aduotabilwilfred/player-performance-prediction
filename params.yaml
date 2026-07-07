@@ -1,6 +1,8 @@
 xgboost_train:
-    n_estimators: 350
-    max_depth: 5
-    learning_rate: 0.20
+    n_estimators: 212
+    max_depth: 3
+    learning_rate: 0.035
+    subsample: 0.80
+    colsample_bytree: 0.75
     random_state: 42
     n_jobs: -1

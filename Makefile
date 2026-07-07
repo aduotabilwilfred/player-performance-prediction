@@ -10,6 +10,8 @@ data:
 	dvc repro
 train:
 	python3 -m player_prediction.models.train
+tune:
+	python3 -m player_prediction.models.parameter_tuning
 test:
 	pytest tests/
 clean:

@@ -46,6 +46,8 @@ src/*.egg-info/
 
 # Ignore trained models
 models/*
+mlartifacts/*
 !models/.gitkeep
 metrics.json
 .gitignore
+mlflow.db
