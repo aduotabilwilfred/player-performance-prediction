@@ -16,7 +16,7 @@ y_test = test_data["player_rating"]
 
 
 mlflow.set_tracking_uri("http://localhost:8000")
-mlflow.set_experiment("xgboost_parameter_tuning")
+mlflow.set_experiment("xgboost_parameter_tuning_v2")
 mlflow.xgboost.autolog()
 
 
