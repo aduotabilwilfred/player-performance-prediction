@@ -1,12 +1,17 @@
 schema: '2.0'
 stages:
   process_data:
-    cmd: python3 src/player_prediction/data/data_processing.py
+    cmd: python3 -m src.player_prediction.data.data_processing
     deps:
     - path: configs/config.yaml
       hash: md5
-      md5: 3f9594bfcb3265685c12bba6a309e82b
-      size: 1205
+      md5: fbd9c0465bc968858b43e1f1be9a65ef
+      size: 1140
+      isexec: true
+    - path: configs/read_config.py
+      hash: md5
+      md5: 6ddc49b773e1db10ba70fa25566aafbf
+      size: 209
       isexec: true
     - path: data/raw/fifa_world_cup_2026_player_performance.csv
       hash: md5
@@ -15,8 +20,8 @@ stages:
       isexec: true
     - path: src/player_prediction/data/data_processing.py
       hash: md5
-      md5: d446daab0b986458bfc814088253e437
-      size: 8287
+      md5: 84e82b38a9f0111ee44eb6ede138e228
+      size: 8282
       isexec: true
     outs:
     - path: data/processed/test.csv
@@ -33,4 +38,45 @@ stages:
       hash: md5
       md5: 18b6516d1a6794d106f6c23926f9a8da
       size: 3308339
+      isexec: true
+  train:
+    cmd: python3 -m src.player_prediction.models.train
+    deps:
+    - path: configs/config.yaml
+      hash: md5
+      md5: fbd9c0465bc968858b43e1f1be9a65ef
+      size: 1140
+      isexec: true
+    - path: configs/read_config.py
+      hash: md5
+      md5: 6ddc49b773e1db10ba70fa25566aafbf
+      size: 209
+      isexec: true
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 090f42a35568afde663b208edc39103a
+      size: 15432269
+      isexec: true
+    - path: src/player_prediction/models/train.py
+      hash: md5
+      md5: bf62fe5b30f7543f324c7aa41da4cdcb
+      size: 2363
+      isexec: true
+    params:
+      params.yaml:
+        xgboost_train.learning_rate: 0.035
+        xgboost_train.max_depth: 3
+        xgboost_train.n_estimators: 212
+        xgboost_train.n_jobs: -1
+        xgboost_train.random_state: 42
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: bd14aefed4d3e689cc7db72636423e17
+      size: 117
+      isexec: true
+    - path: models/model.pkl
+      hash: md5
+      md5: 547ffaf584c16c384192759f885de478
+      size: 260110
       isexec: true
