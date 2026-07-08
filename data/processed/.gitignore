@@ -2,6 +2,4 @@
 /preprocessing_metadata.json
 /categorical_mapping.json
 /PREPROCESSING_SUMMARY.txt
-/train.csv
-/validation.csv
-/test.csv
+*.csv
