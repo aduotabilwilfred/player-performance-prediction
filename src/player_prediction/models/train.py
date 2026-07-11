@@ -61,10 +61,10 @@ if __name__ == "__main__":
     test_df = pd.read_csv("data/processed/test.csv")
 
     # separate features and target
-    X_train = train_df.drop("player_rating", axis=1)
+    X_train = train_df[["consistency_score","market_value_eur","defensive_contribution", "offensive_contribution","creativity_score","goals", "assists"]] #train_df.drop("player_rating", axis=1)
     y_train = train_df["player_rating"]
-    X_val = val_df.drop("player_rating", axis=1)
+    X_val = val_df[["consistency_score","market_value_eur","defensive_contribution", "offensive_contribution","creativity_score","goals", "assists"]] #val_df.drop("player_rating", axis=1)
     y_val = val_df["player_rating"]
-    X_test = test_df.drop("player_rating", axis=1)
+    X_test = test_df[["consistency_score","market_value_eur","defensive_contribution", "offensive_contribution","creativity_score","goals", "assists"]] #test_df.drop("player_rating", axis=1)
     y_test = test_df["player_rating"]
     main(X_train, y_train, X_val, y_val, X_test, y_test, parameters=load_parameters())

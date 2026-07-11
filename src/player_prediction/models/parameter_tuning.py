@@ -7,22 +7,29 @@ train_data = pd.read_csv("data/processed/train.csv")
 val_data = pd.read_csv("data/processed/validation.csv")
 test_data = pd.read_csv("data/processed/test.csv")
 
-X_train = train_data.drop("player_rating", axis=1)
+"""X_train = train_data.drop("player_rating", axis=1)
 y_train = train_data["player_rating"]
 X_val = val_data.drop("player_rating", axis=1)
 y_val = val_data["player_rating"]
 X_test = test_data.drop("player_rating", axis=1)
 y_test = test_data["player_rating"]
+"""
 
+X_train = train_data[["consistency_score","market_value_eur","defensive_contribution", "offensive_contribution","creativity_score","goals", "assists"]] #train_df.drop("player_rating", axis=1)
+y_train = train_data["player_rating"]
+X_val = val_data[["consistency_score","market_value_eur","defensive_contribution", "offensive_contribution","creativity_score","goals", "assists"]] #val_df.drop("player_rating", axis=1)
+y_val = val_data["player_rating"]
+X_test = test_data[["consistency_score","market_value_eur","defensive_contribution", "offensive_contribution","creativity_score","goals", "assists"]] #test_df.drop("player_rating", axis=1)
+y_test = test_data["player_rating"]
 
 mlflow.set_tracking_uri("http://localhost:8000")
-mlflow.set_experiment("xgboost_parameter_tuning_v2")
+mlflow.set_experiment("xgboost_parameter_tuning_v3")
 mlflow.xgboost.autolog()
 
 
 def objective(trial, X_train, y_train, X_val, y_val, X_test, y_test):
     params = {
-        "n_estimators": trial.suggest_int("n_estimators", 50, 300),
+        "n_estimators": trial.suggest_int("n_estimators", 50, 150, 200),
         "max_depth": trial.suggest_int("max_depth", 3, 10),
         "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3, log=True),
         "subsample": trial.suggest_float("subsample", 0.6, 1.0),
