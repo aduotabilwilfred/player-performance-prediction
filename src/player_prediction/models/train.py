@@ -5,27 +5,37 @@ import numpy as np
 import pandas as pd
 import yaml
 from sklearn.metrics import mean_absolute_error, mean_squared_error
-from xgboost import XGBRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.linear_model import Ridge
+# from xgboost import XGBRegressor
 
 
 def load_parameters():
     params_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../params.yaml"))
     with open(params_path, "r") as f:
         config = yaml.safe_load(f)
-    return config["xgboost_train"]
+    model_type = config.get("model_type", "random_forest")
+    return model_type, config[model_type]
 
 
-def main(X_train, y_train, X_val, y_val, X_test, y_test, parameters=None):
+def get_model(model_type, params):
+    if model_type == "random_forest":
+        return RandomForestRegressor(**params)
+    elif model_type == "gradient_boosting":
+        return GradientBoostingRegressor(**params)
+    elif model_type == "ridge":
+        return Ridge(**params)
+    # elif model_type == "xgboost":
+    #     return XGBRegressor(**params)
+    else:
+        raise ValueError(f"Unknown model type: {model_type}")
+
+
+def main(X_train, y_train, X_val, y_val, X_test, y_test, model_type, parameters=None):
     params = parameters
-    print(params)
+    print(f"Training {model_type} with parameters: {params}")
 
-    model = XGBRegressor(
-        n_estimators=params["n_estimators"],
-        max_depth=params["max_depth"],
-        learning_rate=params["learning_rate"],
-        random_state=params["random_state"],
-        n_jobs=params["n_jobs"],
-    )
+    model = get_model(model_type, params)
 
     model.fit(X_train, y_train)
     val_r2 = model.score(X_val, y_val)
@@ -66,4 +76,5 @@ if __name__ == "__main__":
     y_val = val_df["player_rating"]
     X_test = test_df[["consistency_score","market_value_eur","defensive_contribution", "offensive_contribution","creativity_score","goals", "assists"]] #test_df.drop("player_rating", axis=1)
     y_test = test_df["player_rating"]
-    main(X_train, y_train, X_val, y_val, X_test, y_test, parameters=load_parameters())
+    model_type, parameters = load_parameters()
+    main(X_train, y_train, X_val, y_val, X_test, y_test, model_type=model_type, parameters=parameters)

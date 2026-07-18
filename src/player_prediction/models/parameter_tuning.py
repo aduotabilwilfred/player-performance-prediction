@@ -1,7 +1,19 @@
+import os
+import yaml
 import mlflow
 import optuna
 import pandas as pd
-from xgboost import XGBRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.linear_model import Ridge
+# from xgboost import XGBRegressor
+
+
+def load_model_type():
+    params_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../params.yaml"))
+    with open(params_path, "r") as f:
+        config = yaml.safe_load(f)
+    return config.get("model_type", "random_forest")
+
 
 train_data = pd.read_csv("data/processed/train.csv")
 val_data = pd.read_csv("data/processed/validation.csv")
@@ -23,22 +35,40 @@ X_test = test_data[["consistency_score","market_value_eur","defensive_contributi
 y_test = test_data["player_rating"]
 
 mlflow.set_tracking_uri("http://localhost:8000")
-mlflow.set_experiment("xgboost_parameter_tuning_v3")
-mlflow.xgboost.autolog()
+# mlflow.set_experiment("xgboost_parameter_tuning_v3")
+# mlflow.xgboost.autolog()
 
 
-def objective(trial, X_train, y_train, X_val, y_val, X_test, y_test):
+# def objective_xgboost(trial, X_train, y_train, X_val, y_val, X_test, y_test):
+#     params = {
+#         "n_estimators": trial.suggest_int("n_estimators", 50, 150, 200),
+#         "max_depth": trial.suggest_int("max_depth", 3, 10),
+#         "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3, log=True),
+#         "subsample": trial.suggest_float("subsample", 0.6, 1.0),
+#         "colsample_bytree": trial.suggest_float("colsample_bytree", 0.6, 1.0),
+#         "n_jobs": trial.suggest_int("n_jobs", -1, -1),
+#     }
+# 
+#     with mlflow.start_run(nested=True):
+#         model = XGBRegressor(**params, random_state=42)
+#         model.fit(X_train, y_train)
+#         val_score = model.score(X_val, y_val)
+#         test_score = model.score(X_test, y_test)
+#         trial.set_user_attr("test_score", test_score)
+#         return val_score
+
+
+def objective_rf(trial, X_train, y_train, X_val, y_val, X_test, y_test):
     params = {
-        "n_estimators": trial.suggest_int("n_estimators", 50, 150, 200),
-        "max_depth": trial.suggest_int("max_depth", 3, 10),
-        "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3, log=True),
-        "subsample": trial.suggest_float("subsample", 0.6, 1.0),
-        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.6, 1.0),
-        "n_jobs": trial.suggest_int("n_jobs", -1, -1),
+        "n_estimators": trial.suggest_int("n_estimators", 50, 200),
+        "max_depth": trial.suggest_int("max_depth", 3, 15),
+        "min_samples_split": trial.suggest_int("min_samples_split", 2, 10),
+        "random_state": 42,
+        "n_jobs": -1,
     }
 
     with mlflow.start_run(nested=True):
-        model = XGBRegressor(**params, random_state=42)
+        model = RandomForestRegressor(**params)
         model.fit(X_train, y_train)
         val_score = model.score(X_val, y_val)
         test_score = model.score(X_test, y_test)
@@ -46,9 +76,58 @@ def objective(trial, X_train, y_train, X_val, y_val, X_test, y_test):
         return val_score
 
 
+def objective_gb(trial, X_train, y_train, X_val, y_val, X_test, y_test):
+    params = {
+        "n_estimators": trial.suggest_int("n_estimators", 50, 200),
+        "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.2, log=True),
+        "max_depth": trial.suggest_int("max_depth", 3, 8),
+        "random_state": 42,
+    }
+
+    with mlflow.start_run(nested=True):
+        model = GradientBoostingRegressor(**params)
+        model.fit(X_train, y_train)
+        val_score = model.score(X_val, y_val)
+        test_score = model.score(X_test, y_test)
+        trial.set_user_attr("test_score", test_score)
+        return val_score
+
+
+def objective_ridge(trial, X_train, y_train, X_val, y_val, X_test, y_test):
+    params = {
+        "alpha": trial.suggest_float("alpha", 0.01, 10.0, log=True),
+        "random_state": 42,
+    }
+
+    with mlflow.start_run(nested=True):
+        model = Ridge(**params)
+        model.fit(X_train, y_train)
+        val_score = model.score(X_val, y_val)
+        test_score = model.score(X_test, y_test)
+        trial.set_user_attr("test_score", test_score)
+        return val_score
+
+
+model_type = load_model_type()
+
+if model_type == "random_forest":
+    mlflow.set_experiment("random_forest_parameter_tuning")
+    mlflow.sklearn.autolog()
+    objective_func = lambda trial: objective_rf(trial, X_train, y_train, X_val, y_val, X_test, y_test)
+elif model_type == "gradient_boosting":
+    mlflow.set_experiment("gradient_boosting_parameter_tuning")
+    mlflow.sklearn.autolog()
+    objective_func = lambda trial: objective_gb(trial, X_train, y_train, X_val, y_val, X_test, y_test)
+elif model_type == "ridge":
+    mlflow.set_experiment("ridge_parameter_tuning")
+    mlflow.sklearn.autolog()
+    objective_func = lambda trial: objective_ridge(trial, X_train, y_train, X_val, y_val, X_test, y_test)
+else:
+    raise ValueError(f"Unknown model type for tuning: {model_type}")
+
 with mlflow.start_run():
     study = optuna.create_study(direction="maximize")
-    study.optimize(lambda trial: objective(trial, X_train, y_train, X_val, y_val, X_test, y_test), n_trials=50)
+    study.optimize(objective_func, n_trials=50)
     mlflow.log_params({f"best_{k}": v for k, v in study.best_params.items()})
     mlflow.log_metric("best_val_score", study.best_value)
 
