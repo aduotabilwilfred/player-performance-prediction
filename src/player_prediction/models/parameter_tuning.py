@@ -95,16 +95,19 @@ model_type = load_model_type()
 if model_type == "random_forest":
     mlflow.set_experiment("random_forest_parameter_tuning_v2")
     mlflow.sklearn.autolog()
+
     def objective_func(trial):
         return objective_rf(trial, X_train, y_train, X_val, y_val, X_test, y_test)
 elif model_type == "gradient_boosting":
     mlflow.set_experiment("gradient_boosting_parameter_tuning")
     mlflow.sklearn.autolog()
+
     def objective_func(trial):
         return objective_gb(trial, X_train, y_train, X_val, y_val, X_test, y_test)
 elif model_type == "ridge":
     mlflow.set_experiment("ridge_parameter_tuning")
     mlflow.sklearn.autolog()
+
     def objective_func(trial):
         return objective_ridge(trial, X_train, y_train, X_val, y_val, X_test, y_test)
 else:
