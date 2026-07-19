@@ -6,8 +6,7 @@ import pandas as pd
 import yaml
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import Ridge
-
-# from xgboost import XGBRegressor
+from xgboost import XGBRegressor
 
 
 def load_model_type():
