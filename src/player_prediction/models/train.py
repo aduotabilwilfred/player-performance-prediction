@@ -7,7 +7,7 @@ import yaml
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.linear_model import Ridge
-# from xgboost import XGBRegressor
+from xgboost import XGBRegressor
 
 
 def load_parameters():
@@ -25,8 +25,8 @@ def get_model(model_type, params):
         return GradientBoostingRegressor(**params)
     elif model_type == "ridge":
         return Ridge(**params)
-    # elif model_type == "xgboost":
-    #     return XGBRegressor(**params)
+    elif model_type == "xgboost":
+        return XGBRegressor(**params)
     else:
         raise ValueError(f"Unknown model type: {model_type}")
 
